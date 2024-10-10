@@ -18,11 +18,11 @@ userRouter.post("/gogleSync", signin);
 
 userRouter.put("/:email", forgotPassword);
 
-userRouter.put("/:userId", auth, authorizeRoles(["admin"]), updateUser);
+userRouter.put("/:userId", auth, authorizeRoles("admin"), updateUser);
 
-userRouter.delete("/:userId", auth, authorizeRoles(["admin"]), deleteUser);
+userRouter.delete("/:userId", auth, authorizeRoles("admin"), deleteUser);
 
-userRouter.get("/", auth, authorizeRoles(["admin"]), getAllUsers);
+userRouter.get("/", auth, authorizeRoles("admin"), getAllUsers);
 
 userRouter.get("/:userId", auth, getUserById);
 

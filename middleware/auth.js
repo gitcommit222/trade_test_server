@@ -4,7 +4,6 @@ export const auth = async (req, res, next) => {
 	try {
 		// Safely check if authorization header and token exist
 		const token = req.headers?.authorization?.split(" ")[1];
-
 		// If no token is provided, return a 401 error
 		if (!token) {
 			return res.status(401).json({ message: "Authorization token missing" });
@@ -37,6 +36,7 @@ export const auth = async (req, res, next) => {
 // validate user roles
 export const authorizeRoles = (...roles) => {
 	return (req, res, next) => {
+		console.log(req.user);
 		if (!roles.includes(req.user?.role || "")) {
 			return res.status(
 				400,
