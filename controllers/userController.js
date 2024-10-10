@@ -11,7 +11,9 @@ export const signin = async (req, res) => {
 			res.status(400).json({ message: "User doesn't exist!" });
 		}
 
-		if (password !== user.password) {
+		const isPasswordValid = await bcrypt.compare(password, user.password);
+
+		if (!isPasswordValid) {
 			res.status(400).json("Invalid credentials.");
 		}
 
@@ -24,6 +26,25 @@ export const signin = async (req, res) => {
 		res.status(200).json({ user, token });
 	} catch (error) {
 		res.status(500).json({ message: "Something went wrong." });
+	}
+};
+
+export const googleSync = async (req, res) => {
+	const { email, name } = req.body;
+
+	try {
+		let user = await User.findOne({ email });
+
+		if (!user) {
+			user = await User.create({ email, name, provider: "google" });
+		} else {
+			user.provider = "google";
+			await user.save();
+		}
+
+		res.status(200).json({ user });
+	} catch (error) {
+		res.status(500).json({ message: "Server error" });
 	}
 };
 
@@ -94,7 +115,9 @@ export const forgotPassword = async (req, res) => {
 			return res.status(404).json({ message: "User not found." });
 		}
 
-		user.password = await bcrypt.hash(newPassword, 12);
+		const hashedPass = await bcrypt.hash(newPassword, 12);
+
+		user.password = hashedPass ? hashedPass : user.password;
 
 		user.save();
 

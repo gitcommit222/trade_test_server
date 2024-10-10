@@ -29,7 +29,8 @@ mongoose
 		app.listen(PORT, () => {
 			console.log(`Server running on port: ${PORT}`);
 		});
+		console.log("DB Connected!");
 	})
 	.catch((error) => {
-		console.log(error.message);
+		console.log("Database connection failed:", error.message);
 	});

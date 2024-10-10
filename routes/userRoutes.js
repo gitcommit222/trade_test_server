@@ -14,10 +14,11 @@ const userRouter = express.Router();
 
 userRouter.post("/signup", signup);
 userRouter.post("/signin", signin);
-
-userRouter.put("/:userId", auth, authorizeRoles(["admin"]), updateUser);
+userRouter.post("/gogleSync", signin);
 
 userRouter.put("/:email", forgotPassword);
+
+userRouter.put("/:userId", auth, authorizeRoles(["admin"]), updateUser);
 
 userRouter.delete("/:userId", auth, authorizeRoles(["admin"]), deleteUser);
 
