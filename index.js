@@ -1,8 +1,10 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import userRouter from "./routes/userRoutes.js";
 import mongoose from "mongoose";
+
+import userRouter from "./routes/userRoutes.js";
+import postRouter from "./routes/postRouter.js";
 
 dotenv.config();
 
@@ -19,6 +21,7 @@ app.use(
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json({ limit: "50mb" }));
 
+app.use("/posts", postRouter);
 app.use("/users", userRouter);
 
 const CONNECTION_URL = process.env.MONGO_URI;

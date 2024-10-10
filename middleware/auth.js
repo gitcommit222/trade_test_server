@@ -36,7 +36,6 @@ export const auth = async (req, res, next) => {
 // validate user roles
 export const authorizeRoles = (...roles) => {
 	return (req, res, next) => {
-		console.log(req.user);
 		if (!roles.includes(req.user?.role || "")) {
 			return res.status(
 				400,

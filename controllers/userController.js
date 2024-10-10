@@ -49,7 +49,8 @@ export const googleSync = async (req, res) => {
 };
 
 export const signup = async (req, res) => {
-	const { email, password, confirmPassword, fullName } = req.body;
+	const { email, password, confirmPassword, fullName, role, username } =
+		req.body;
 
 	try {
 		const userExists = await User.findOne({ email });
@@ -66,10 +67,12 @@ export const signup = async (req, res) => {
 			email,
 			password: hashedPass,
 			name: fullName,
+			role: role ? role : "user",
+			username,
 		});
 
 		const token = jwt.sign(
-			{ email: result.email, id: result._id },
+			{ email: result.email, id: result._id, role: result.role },
 			process.env.JWT_SECRET,
 			{ expiresIn: "1h" }
 		);
@@ -81,7 +84,7 @@ export const signup = async (req, res) => {
 };
 
 export const updateUser = async (req, res) => {
-	const { userId } = req.body;
+	const { userId } = req.params;
 	const { fullName, email, role, username } = req.body;
 	try {
 		if (!userId) {
@@ -129,8 +132,9 @@ export const forgotPassword = async (req, res) => {
 
 export const deleteUser = async (req, res) => {
 	const { userId } = req.params;
+
 	try {
-		await User.findByIdAndRemove(userId);
+		await User.findByIdAndDelete(userId);
 
 		res.status(200).json({ message: "User deleted." });
 	} catch (error) {
