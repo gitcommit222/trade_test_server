@@ -3,7 +3,7 @@ import PostMessage from "../models/postModel.js";
 
 export const getPosts = async (req, res) => {
 	try {
-		const postMessages = await PostMessage.find();
+		const postMessages = await PostMessage.find().populate("creator");
 		res.status(200).json(postMessages);
 	} catch (error) {
 		res.status(400).json({ message: error.message });
@@ -12,15 +12,17 @@ export const getPosts = async (req, res) => {
 
 export const createPost = async (req, res) => {
 	const post = req.body;
-	const newPost = new PostMessage({
+
+	console.log(req.user);
+	const newPost = await PostMessage.create({
 		...post,
-		creator: req.userId,
+		creator: req.user.id,
 		createdAt: new Date().toISOString(),
 	});
 	try {
 		await newPost.save();
 
-		res.status(201).json(newPost);
+		res.status(201).json({ newPost });
 	} catch (error) {
 		res.status(409).json({ meesage: error.message });
 	}
@@ -49,7 +51,7 @@ export const deletePost = async (req, res) => {
 	if (!mongoose.Types.ObjectId.isValid(_id))
 		return res.status(404).json({ message: `No post with id of ${_id}` });
 
-	await PostMessage.findByIdAndRemove(_id);
+	await PostMessage.findByIdAndDelete(_id);
 
 	res.status(200).json({ message: "Post deleted succesfully!" });
 };

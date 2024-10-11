@@ -1,10 +1,13 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const postSchema = mongoose.Schema({
 	title: String,
 	message: String,
 	name: String,
-	creator: String,
+	creator: {
+		type: Schema.Types.ObjectId,
+		ref: "User",
+	},
 	tags: [String],
 	selectedFile: String,
 	videoLinks: String,

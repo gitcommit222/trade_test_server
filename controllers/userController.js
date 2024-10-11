@@ -14,7 +14,7 @@ export const signin = async (req, res) => {
 		const isPasswordValid = await bcrypt.compare(password, user.password);
 
 		if (!isPasswordValid) {
-			res.status(400).json("Invalid credentials.");
+			res.status(400).json({ message: "Invalid credentials." });
 		}
 
 		const token = jwt.sign(
@@ -115,14 +115,15 @@ export const forgotPassword = async (req, res) => {
 		const user = await User.findOne({ email });
 
 		if (!user) {
-			return res.status(404).json({ message: "User not found." });
+			return res.status(404).json({ message: "Invalid email." });
 		}
 
 		const hashedPass = await bcrypt.hash(newPassword, 12);
 
 		user.password = hashedPass ? hashedPass : user.password;
 
-		user.save();
+		await user.save();
+		console.log(user);
 
 		res.status(200).json({ message: "Password successfully changed!" });
 	} catch (error) {
