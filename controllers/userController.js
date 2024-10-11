@@ -3,9 +3,14 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const signin = async (req, res) => {
-	const { email, password } = req.body;
+	const { usernameOrEmail, password } = req.body;
+
 	try {
-		const user = await User.findOne({ email });
+		const user = await User.findOne({
+			$or: [{ username: usernameOrEmail }, { email: usernameOrEmail }],
+		});
+
+		console.log(user);
 
 		if (!user) {
 			res.status(400).json({ message: "User doesn't exist!" });
